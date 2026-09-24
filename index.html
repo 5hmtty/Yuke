@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>语键（Yuke）隐私政策 | Privacy Policy</title>
+<style>
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; max-width: 800px;
+         margin: 2rem auto; padding: 0 1rem; line-height: 1.7; color: #222; }
+  h1 { font-size: 1.5rem; } h2 { font-size: 1.15rem; margin-top: 2rem; }
+  .upd { color: #666; font-size: 0.9rem; }
+  .core { background: #f0f4f8; border-left: 4px solid #2b5aa7; padding: 0.8rem 1rem; }
+  ol li { margin-bottom: 0.5rem; }
+  strong { color: #1a3a6b; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+</style>
+</head>
+<body>
+<h1>语键（Yuke）隐私政策 / Privacy Policy</h1>
+<p class="upd">最后更新 / Last updated: 2026-09-22</p>
+<div class="core">
+<p><strong>核心承诺：所有数据只存在你自己的电脑上，绝不上传。</strong></p>
+<p><strong>Core promise: everything stays on your computer. Your data is never uploaded.</strong></p>
+</div>
+<hr>
+<h2>中文</h2>
+<p>语键（Yuke）是一款语音命令工具：<strong>所有识别都在你的电脑上完成</strong>。我们用最直白的方式说明数据处理方式：</p>
+<ol>
+<li><strong>麦克风音频</strong>：仅在你点击“开始识别”或“补录”时采集，只用于本机实时的发音识别，<strong>不上传、不传输、不发送到任何服务器</strong>。</li>
+<li><strong>录音</strong>：<strong>默认关闭</strong>（可在主页一键开启）。开启时，你注册发音时的录音会保存在本地数据目录中，并使用 AES-256 加密。删除发音时会同步删除对应录音。程序目录中不含你的任何数据。</li>
+<li><strong>发音与配置</strong>：你注册的发音、按键映射、触发方式、宏序列保存在本地（<code>commands.json</code>，明文可自行备份）；识别用的“指纹”（从你的录音生成的声音特征模板）同样只存本地并加密。</li>
+<li><strong>崩溃与诊断日志</strong>：异常退出与运行诊断信息只写在本地 <code>logs\</code> 目录（不含任何录音内容），仅用于你反馈问题时自助排查；诊断日志默认关闭，需在配置中手动开启。</li>
+<li><strong>网络</strong>：程序不会上传你的任何数据。<strong>Microsoft Store 版</strong>：更新通过 Microsoft Store 分发，应用自身不建立任何网络连接；<strong>GitHub 直接下载版</strong>：提供“检查更新”功能，仅在检查时向 GitHub 查询最新版本号，不发送任何本机信息。除此之外无遥测、无统计、无广告。</li>
+<li><strong>卸载与备份（分渠道）</strong>：<strong>Microsoft Store 版</strong>——数据保存在系统的应用数据文件夹（<code>AppData\Local\Packages</code> 下 Yuke 的数据目录），<strong>升级不删除数据，卸载会删除全部数据</strong>；<strong>GitHub zip 版</strong>——数据保存在程序文件夹内，<strong>删除程序文件夹即删除数据</strong>。需要保留录音与发音时，请在卸载或删除前复制对应数据目录备份。</li>
+</ol>
+<h3>权限说明</h3>
+<ul>
+<li><strong>麦克风</strong>：语音识别必需；</li>
+<li><strong>管理员权限（UAC 弹窗）</strong>：游戏常以管理员权限运行，Windows 会拦截普通程序的模拟按键——以管理员运行才能让按键进入游戏；</li>
+<li><strong>键盘模拟</strong>：本软件的核心功能即“识别到发音后模拟按键”，使用 Windows 标准 SendInput 接口，不含任何内存读取或注入。</li>
+</ul>
+<h3>反作弊提醒</h3>
+<p>个别游戏的反作弊系统可能限制或拦截模拟键盘输入，使用前请确认目标游戏的用户协议；Yuke 仅发送标准键盘事件，不读取内存、不注入任何进程。</p>
+<p><strong>联系方式</strong>：shmtty@qq.com</p>
+<hr>
+<h2>English</h2>
+<p>Last updated: 2026-09-22</p>
+<p>Yuke is a voice-command tool: <strong>all recognition runs on your machine</strong>. In plain terms:</p>
+<p><strong>Core promise: everything stays on your computer. Your data is never uploaded.</strong></p>
+<ol>
+<li><strong>Microphone audio</strong>: captured only while recognition or phrase recording is active, processed entirely on-device for local speech recognition — <strong>never uploaded or transmitted</strong>.</li>
+<li><strong>Recordings</strong>: <strong>off by default</strong> (one-click toggle on the main page to enable). When enabled, enrolled phrase recordings are stored in the local data folder with AES-256 encryption. Deleting a phrase deletes its recordings. The program folder itself contains none of your data.</li>
+<li><strong>Phrases &amp; settings</strong>: your enrolled phrases, key mappings, trigger modes and macro sequences are stored locally (<code>commands.json</code>, plain text for easy backup); the voice "fingerprints" (templates generated from your recordings) are also stored locally, encrypted.</li>
+<li><strong>Crash &amp; diagnostic logs</strong>: written locally to <code>logs\</code> only (contains no audio content), for your own troubleshooting; diagnostic logging is off by default and must be enabled manually in the config.</li>
+<li><strong>Network</strong>: the app never uploads your data. <strong>Microsoft Store version</strong>: updates are delivered through Microsoft Store, and the app itself makes no network connections. <strong>GitHub download version</strong>: provides a "check for updates" feature that only queries GitHub for the latest version number — no information from your machine is sent. No telemetry, no analytics, no ads.</li>
+<li><strong>Uninstall &amp; backup (per channel)</strong>: <strong>Microsoft Store version</strong> — data lives in the system per-app data folder (Yuke's folder under <code>AppData\Local\Packages</code>); <strong>updates keep your data, uninstall deletes all of it</strong>. <strong>GitHub zip version</strong> — data lives inside the program folder; <strong>deleting the program folder deletes your data</strong>. To keep recordings and phrases, copy the data folder before uninstalling or deleting.</li>
+</ol>
+<h3>Permissions</h3>
+<ul>
+<li><strong>Microphone</strong>: required for speech recognition;</li>
+<li><strong>Administrator (UAC prompt)</strong>: many games run elevated and Windows blocks simulated input from non-elevated processes — running elevated lets keys reach the game;</li>
+<li><strong>Keyboard simulation</strong>: the core function of this app, via the standard Windows SendInput API. No memory reading, no process injection.</li>
+</ul>
+<h3>Anti-cheat notice</h3>
+<p>Some games' anti-cheat systems may restrict or block simulated keyboard input. Please review your game's terms of service. Yuke only sends standard keyboard events — it never reads memory or injects into any process.</p>
+<p><strong>Contact</strong>: shmtty@qq.com</p>
+</body>
+</html>
