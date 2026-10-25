@@ -1,0 +1,70 @@
+[package]
+name = "yuke"
+version = "1.2.6"
+edition = "2024"
+rust-version = "1.85"
+authors = ["Yuke contributors"]
+description = "Offline streaming voice-to-keyboard tool for Windows"
+license = "MIT"
+repository = "https://github.com/5hmtty/Yuke"
+# Third-party models, data and dependencies: see ATTRIBUTIONS.md.
+
+[dependencies]
+anyhow = "1.0.104"
+chrono = "0.4"
+cpal = "0.15"
+hound = "3.5.1"
+ndarray = "0.17.2"
+ort = { version = "2.0.0-rc.13", default-features = false, features = ["load-dynamic", "ndarray"] }
+rustfft = "6.4.1"
+rtrb = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0.151"
+global-hotkey = "0.6"
+
+# Update check: minimal blocking HTTP client, GET GitHub Releases API only.
+# rustls (pure-Rust TLS); avoids the native openssl dependency.
+ureq = { version = "2", default-features = false, features = ["tls", "gzip"] }
+
+# Windows APIs. RNG: BCryptGenRandom. AES is implemented in src/crypto.rs with no extra dependency.
+windows = { version = "0.58.0", features = [
+    "Win32_Foundation",
+    "Win32_Security_Cryptography",
+    "Win32_System_Registry",
+    # Audio endpoints / AEC probing (src/audio/comm.rs, sonora_aec.rs)
+    "Win32_Media_Audio",
+    "Win32_Media_Audio_Endpoints",
+    "Win32_Devices_Properties",
+    "Win32_System_Com",
+    # Single instance: named mutex + named event
+    "Win32_System_Threading",
+    # AllowSetForegroundWindow: hand over foreground rights to the second instance
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Shell_PropertiesSystem",
+    "implement",
+] }
+# The #[implement] expansion references windows_core directly (macro hygiene); keep the same version explicit.
+windows-core = "0.58.0"
+
+# Desktop UI
+eframe = "0.31"
+egui_extras = "0.31"
+
+# Echo cancellation: Rust port of WebRTC APM (AEC3 + resampling primitives)
+sonora-common-audio = "0.2.0"
+sonora = "0.2.0"
+
+# ── Release profile ──
+# strip + fat LTO + single codegen unit + panic=abort: minimum size.
+# Cost: release builds are noticeably slower; dev/test profiles are unaffected.
+[profile.release]
+strip = true
+panic = "abort"
+lto = true
+codegen-units = 1
+opt-level = 3
+
+[build-dependencies]
+winresource = "0.1"
+# build.rs reads lang/*.json to generate i18n key constants (same version as [dependencies], no extra download)
+serde_json = "1.0.151"

@@ -1,0 +1,97 @@
+name: release
+
+# Triggers:
+#   tag push (dot-separated numbers, optional leading v) -> build + test + package + GitHub Release
+#   manual workflow_dispatch -> same build, but uploads an artifact only
+# The in-app updater requests releases/latest (src/platform/update.rs), so the tag must be
+# dot-separated numbers and the Release must not be a draft or pre-release.
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    # Release gate: create an Environment named "release" and enable Required reviewers.
+    # Otherwise GitHub auto-creates an empty environment with no approval, which defeats the gate.
+    environment: release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Version consistency (tag must equal Cargo.toml version)
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}".TrimStart('v')
+          $ver = (Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"(.+?)"').Matches[0].Groups[1].Value
+          Write-Host "tag: $tag / Cargo.toml: $ver"
+          if ($tag -ne $ver) {
+            Write-Error "tag ($tag) does not match Cargo.toml version ($ver) - update Cargo.toml before tagging"
+            exit 1
+          }
+
+      - name: Build (release)
+        run: cargo build --release --locked
+
+      - name: Test (serial; uses the audio device and temp dirs)
+        run: cargo test --all-targets --locked -- --test-threads=1
+
+      - name: Package (exe + pak + onnxruntime + lang + zip)
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File packaging/package_dist.ps1
+
+      - name: Collect artifact metadata
+        id: pkg
+        shell: pwsh
+        run: |
+          $ver = (Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"(.+?)"').Matches[0].Groups[1].Value
+          $zip = "dist/Yuke-$ver.zip"
+          if (-not (Test-Path $zip)) { Write-Error "$zip was not generated"; exit 1 }
+          $len = (Get-Item $zip).Length
+          $sha = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+          "Yuke-$ver.zip  $len bytes" | Out-File -Encoding utf8 dist\SHA256SUMS.txt
+          "$sha  Yuke-$ver.zip"      | Out-File -Append -Encoding utf8 dist\SHA256SUMS.txt
+          Get-Content dist\SHA256SUMS.txt
+          "zip=$zip" >> $env:GITHUB_OUTPUT
+          "ver=$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Upload artifact (manual runs)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Yuke-${{ steps.pkg.outputs.ver }}
+          path: |
+            ${{ steps.pkg.outputs.zip }}
+            dist/SHA256SUMS.txt
+          retention-days: 14
+
+      - name: Publish Release (tag only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Yuke ${{ steps.pkg.outputs.ver }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            ${{ steps.pkg.outputs.zip }}
+            dist/SHA256SUMS.txt

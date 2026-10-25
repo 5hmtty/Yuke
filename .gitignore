@@ -1,0 +1,16 @@
+/target
+/dist
+/config
+/recordings
+/logs
+*.log
+tmp_*
+.vscode/
+.idea/
+
+# Silero VAD is distributed with this repository (MIT, see ATTRIBUTIONS.md).
+# The CN-Celeb speaker model is not committed: its training data terms are non-commercial.
+assets/sv_cnceleb_resnet34.onnx
+
+# Test temp dirs (created by cargo test)
+PROBE_TEST_DIR_*/
